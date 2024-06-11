@@ -1,0 +1,394 @@
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+  <head>
+    <title>Application</title>
+	<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+	<link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.2/css/dataTables.dateTime.min.css" />
+
+  </head>
+  <body>
+    <header></header>
+	<main>
+		<div class="container">
+			<form class="action-field" id="file-upload-form" action="" name="form-files"> 
+				<div class='action-field__file'>
+					<label for="upload-file">Upload a file:</label>
+					<input type="file" id="upload-file" name="upload-file" accept="" />
+				</div>
+				<div class='action-field__text'>
+					<label for="write-tag">Write a tag name</label>
+					<input type="text" id="write-tag" multiple name="write-tag" disabled="true"/>
+				</div>
+				<input id="upload-file-btn" type="submit" value="Upload" disabled="true"/>
+			</form>
+
+			<div class="table-wrapper">
+				<div class="tables">
+					<table border="0" cellspacing="5" cellpadding="5">
+						<tbody><tr>
+							<td>Start date:</td>
+							<td><input type="text" id="min" name="min"></td>
+						</tr>
+						<tr>
+							<td>End date:</td>
+							<td><input type="text" id="max" name="max"></td>
+						</tr>
+					    </tbody>
+                    </table>
+
+					<table id="main-table" class="display nowrap" style="width:80%">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Tags</th>
+								<th>Date</th>
+								<th class="no-sort">Download</th>
+								<th class="no-sort">Remove</th>						
+								
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="video: ${videos}">
+								<td th:text="${video.filename}"/>
+                                <td th:text="${video.hashTags}"/>
+								<td th:text="${#dates.format(video.uploadDate, 'HH:mm dd-MM-YYYY')}"/>
+								<td>
+									<a th:href="@{/file/download/{id}(id=${video.id})}" class='download'>
+										<svg fill="#000000" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 489.104 489.104" xml:space="preserve">
+											<g>
+												<path d="M411.55,100.9l-94.7-94.7c-4.2-4.2-9.4-6.2-14.6-6.2H92.15c-11.4,0-20.8,9.4-20.8,20.8v330.8c0,11.4,9.4,20.8,20.8,20.8
+													h132.1V421l-16.6-15.2c-8.3-7.3-21.8-7.3-29.1,1s-7.3,21.8,1,29.1l52,47.9c3.1,3.1,14.6,10.2,29.1,0l52-47.9
+													c8.3-8.3,8.3-20.8,1-29.1c-8.3-8.3-20.8-8.3-29.1-1l-18.7,17.2v-50.5h132.1c11.4,0,19.8-9.4,19.8-19.8V115.5
+													C417.85,110.3,415.75,105.1,411.55,100.9z M324.15,70.4l39.3,38.9h-39.3V70.4z M265.95,331.9v-130c0-11.4-9.4-20.8-20.8-20.8
+													c-11.4,0-20.8,9.4-20.8,20.8v130h-111.3V41.6h169.6v86.3c0,11.4,9.4,20.8,20.8,20.8h74.9v183.1h-112.4V331.9z"/>
+											</g>
+										</svg>
+									</a>
+								</td>
+								<td>
+									<a th:href="@{/file/delete/{id}(id=${video.id})}" >
+										<svg width="20px" height="20px" viewBox="-0.5 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+											<path d="M3 21.32L21 3.32001" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+											<path d="M3 3.32001L21 21.32" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+										</svg>
+									</a>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+							<th>Name</th>
+								<th>Tags</th>
+								<th>Date</th>
+								<th>Download</th>
+								<th>Remove</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+                <div style="border: 1px solid black;">
+        			<form class="action-field" id="add-hashtag-form" action="" name="form-hashtag"> 
+        				<div class='action-field__text'>
+		        			<label for="add-new-tag">Add new hash tag:</label>
+				        	<input type="text" id="add-new-tag"/>
+                            <input id="add-new-hashtag-btn" type="submit" value="Add"/>
+        				</div>
+        			</form>
+
+                    <table id="tags-table" class="display nowrap" style="width:20%">
+        				<div id='hashTags' class='tags'>
+		        			<!--a href=''>#tag1</a>
+				        	<a href=''>#tag2</a>
+        					<a href=''>#tag3</a>
+		        			<a href=''>#tag4</a-->
+                            <!--table>
+		        				<tbody>
+                                </tbody>
+                            </table-->
+				        </div>
+                    </table>
+                </div>
+			</div>
+		</div>
+	</main>
+	<footer></footer>
+  </body>
+</html>
+
+<style>
+
+	body {
+		color: #000;
+		font-size: 20px;
+	}
+
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	.action-field {
+		display: flex;
+		padding: 0 5px;
+		margin: 40px 0 30px;
+	}
+
+	.action-field input {
+		height: 30px;
+		padding: 5px;
+	}
+
+	.action-field input[type='submit'] {
+		border-radius: 0;
+		background: #efefef;
+	}
+
+	.table-wrapper {
+		display: flex;
+	}
+
+	.table-wrapper .tables { 
+		flex: 0 0 900px;
+		font-size: 20px;
+		border-collapse: collapse;
+	}
+	
+	.table-wrapper .tables table {
+		font-size: 20px;
+	}
+
+	.table-wrapper table thead {
+		background: #efefef;
+	}
+
+	.table-wrapper table th, .table-wrapper table td {
+		border: 1px solid #000;
+	}
+
+	.table-wrapper table tr:nth-child(even) {
+		background: #efefef;
+	}
+
+	.table-wrapper table thead th { 
+		text-align: left;
+		padding: 5px;
+	}
+	
+	.string__inner {
+		display: flex;
+		align-items: center; 
+		justify-content: space-between;
+	}
+
+
+	.table-wrapper table tbody td {
+		padding: 5px;
+	}
+
+	.tags {
+		margin-left: 40px;
+	}
+ 
+	.tags a {
+		color: #000;
+		margin: 0 10px 10px 0;
+		text-decoration: none;
+	}
+
+
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+<script src="https://cdn.datatables.net/datetime/1.5.2/js/dataTables.dateTime.min.js"></script>
+
+
+
+<script>
+
+	
+	let minDate, maxDate;
+ 
+    const table = new DataTable('#main-table');
+    
+    table.search.fixed('range', function (searchStr, data, index) {
+		let min = minDate.val();
+		let max = maxDate.val();
+
+        // match HH:mm DD-MM-YYYY and get time attributes
+        var dateString = data[2].match(/^(\d{2}):(\d{2})\s+(\d{2})-(\d{2})-(\d{4})$/);
+		
+        //let date = new Date(dateString[5], dateString[4]-1, dateString[3], dateString[1], dateString[2]);
+        let date = new Date(dateString[5], dateString[4]-1, dateString[3]);
+        //let formattedDate = ("0" + date.getDate()).slice(-2) + "-" + ("0"+(date.getMonth()+1)).slice(-2) + "-" + date.getFullYear() + " " + ("0" + date.getHours()).slice(-2) + ":" + ("0" + date.getMinutes()).slice(-2);
+
+		if (
+			(min === null && max === null) ||
+			(min === null && date <= max) ||
+			(min <= date && max === null) ||
+			(min <= date && date <= max)
+		) {
+			return true;
+		}
+		return false;
+	});
+  
+
+	minDate = new DateTime('#min', {
+		format: 'DD-MM-YYYY'
+	});
+	maxDate = new DateTime('#max', {
+		format: 'DD-MM-YYYY'
+	});
+  
+ 
+	 /*$('#main-table').DataTable( {
+            "ordering" : true,
+            "columnDefs" : [{"targets":2, render: DataTable.render.date()}]
+			//columnDefs: [ {
+			//  targets: [1],
+			//  orderData: [1, 2]
+		} ]
+	} );*/
+  
+
+	document.querySelectorAll('#min, #max').forEach((el) => {
+		el.addEventListener('change', () => table.draw());
+	});
+
+    
+    $(document).ready(function() {
+
+        $.ajax({
+            type: 'GET',
+            url: "/hashtag/",
+			contentType: "application/json; charset=utf-8",
+			success: function (response) {
+
+                for (var i = 0; i < response.length; i++) {
+                    var tagRef ="<tr><td><a href=''>#" + response[i].value + "</a></td></tr>";
+            	   	$('#hashTags').append(tagRef)
+                }
+
+                $( ".tags a" ).each(function( index ) {
+                	$(this).on('click', function (e) {
+                		e.preventDefault();
+                		let text = $(this).text();
+                		let input = $( "#write-tag" );
+                		input.val( input.val() + text + ' ' );
+                        document.getElementById("upload-file-btn").removeAttribute('disabled');
+                	}); 
+                });
+			},
+			failure: function (response) {
+			    alert(response.responseText);
+			}
+        });
+
+    });
+
+    const isEmpty = str => !str.trim().length;
+    
+    document.getElementById("write-tag").addEventListener("input", function() {
+    //$("#write-tag").on('change', function() {
+        if( isEmpty(this.value) ) {
+            console.log( "NAME is invalid (Empty)" );
+            document.getElementById("upload-file-btn").setAttribute("disabled", true);
+        } else {
+            console.log( "NAME is not Empty" );
+            document.getElementById("upload-file-btn").removeAttribute('disabled');
+        }
+    });
+
+    let uploadForm = document.querySelector("#file-upload-form");
+    let uploadFormInput = document.querySelector("#upload-file");
+    let writeTagInput = document.querySelector("#write-tag");
+
+    function uploadFile(file, hashTags) {
+        let formData = new FormData();
+        formData.append("file", file);
+        formData.append("hashTags", hashTags);
+
+        let req = new XMLHttpRequest();
+        req.open("POST", "/file/upload")
+
+        req.onload = function () {
+            console.log(req.responseText);
+
+            let response = req.responseText;
+
+            if (response == null) {
+                alert("Error Occured! No file returned");
+            } else {
+                window.location.replace("/file/");
+            }
+        }
+
+        req.send(formData);
+    }
+
+    uploadForm.addEventListener('submit', function (event) {
+        const files = uploadFormInput.files;
+        const hashTags = writeTagInput.value;
+
+        if (files.length !== 0 ) {
+            uploadFile(files[0], hashTags);
+            event.preventDefault();
+        } else {
+            alert('Please select a file')
+        }
+    }, true);
+
+    let addHashTagForm = document.querySelector("#add-hashtag-form");
+    let addNewTagInput = document.querySelector("#add-new-tag");
+
+    function addNewTag(hashTag) {
+        let formData = new FormData();
+        formData.append("hashTag", hashTag);
+
+        let req = new XMLHttpRequest();
+        req.open("POST", "/hashtag/add/")
+
+        req.onload = function () {
+            console.log(req.responseText);
+
+            let response = req.responseText;
+
+            if (response == null) {
+                alert("Error Occured! No hashTag added");
+            } else {
+                window.location.replace("/file/");
+            }
+        }
+
+        req.send(formData);
+    }
+
+    addHashTagForm.addEventListener('submit', function (event) {
+        const newHashTag = addNewTagInput.value;
+
+        if ( !isEmpty(newHashTag) ) {
+            addNewTag(newHashTag);
+            event.preventDefault();
+        } else {
+            alert('Value could not be empty')
+        }
+    }, true);
+
+	//Click handler is already added in previous code
+	/*$( ".tags a" ).each(function( index ) {
+		$(this).on('click', function (e) {
+			e.preventDefault();
+			let text = $(this).text();
+			let input = $( "#write-tag" );
+			input.val( input.val() + text + ' ' ); 
+		}); 
+	});*/
+	
+	$('.remove').on('click', function (e) {
+		e.preventDefault();
+		$(this).closest('tr').css('display', 'none')
+	});
+		
+</script>
